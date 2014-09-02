@@ -17,7 +17,7 @@
       %dd= job.queue
     %dt Handler
     %dd
-      %pre&= job.handler.gsub(/^\s+remote_password: .*$/, '  remote_password: *****')
+      %pre&= job.handler.gsub(/^\s+remote_password: .*$/, '  remote_password: *****').gsub(/^soup_token: .*$/, 'soup_token: *****')
     - if job.last_error
       %dt Last Error
       %dd
