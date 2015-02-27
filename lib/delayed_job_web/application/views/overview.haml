@@ -22,4 +22,16 @@
     %td.status
       %a{:href => u('/failed')} Failed Jobs
     %td= delayed_jobs(:failed).count
+  %tr{:class => delayed_jobs(:api).count > 0 ? 'api' : ''}
+    %td.status
+      %a{:href => u('/api')} API Jobs
+    %td= delayed_jobs(:api).count
+  %tr{:class => delayed_jobs(:sync).count > 0 ? 'sync' : ''}
+    %td.status
+      %a{:href => u('/sync')} Sync Jobs
+    %td= delayed_jobs(:sync).count
+  %tr{:class => delayed_jobs(:syncurgent).count > 0 ? 'syncurgent' : ''}
+    %td.status
+      %a{:href => u('/syncurgent')} Sync Urgent Jobs
+    %td= delayed_jobs(:syncurgent).count
 = poll

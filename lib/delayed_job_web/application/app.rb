@@ -38,7 +38,10 @@ class DelayedJobWeb < Sinatra::Base
       {:name => 'Enqueued', :path => '/enqueued'},
       {:name => 'Working', :path => '/working'},
       {:name => 'Scheduled', :path => '/scheduled'},
-      {:name => 'Failed', :path => '/failed'}
+      {:name => 'Failed', :path => '/failed'},
+      {:name => 'API', :path => '/api'},
+      {:name => 'Sync', :path => '/sync'},
+      {:name => 'Sync Urgent', :path => '/syncurgent'},
     ]
   end
 
@@ -59,7 +62,7 @@ class DelayedJobWeb < Sinatra::Base
     end
   end
 
-  %w(enqueued working scheduled failed).each do |page|
+  %w(enqueued working scheduled failed api sync syncurgent).each do |page|
     get "/#{page}" do
       @jobs = delayed_jobs(page.to_sym).order('updated_at DESC').offset(start).limit(per_page)
       @all_jobs = delayed_jobs(page.to_sym)
@@ -115,6 +118,12 @@ class DelayedJobWeb < Sinatra::Base
       'failed_at IS NOT NULL'
     when :scheduled
       'locked_at IS NULL AND failed_at IS NULL AND run_at > now()'
+    when :api
+      "queue = 'api' AND failed_at IS NULL"
+    when :sync
+      "queue = 'sync' AND failed_at IS NULL"
+    when :syncurgent
+      "queue = 'sync-urgent' AND failed_at IS NULL"
     end
   end
 
@@ -129,7 +138,7 @@ class DelayedJobWeb < Sinatra::Base
     @partial = false
   end
 
-  %w(overview enqueued working scheduled failed) .each do |page|
+  %w(overview enqueued working scheduled failed api sync syncurgent) .each do |page|
     get "/#{page}.poll" do
       show_for_polling(page)
     end
